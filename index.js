@@ -10,6 +10,9 @@ app.get('/', (req,res) => {
 
 app.post('/api/login',(req,res)=>{
     const user = {id:3};
+    //debo obtener el usuario y contraseña insertado desde el body
+    //aqui debo acceder a la base de datos a Validar el usuario y la contraseña ingresada
+    //según sea la respuesta debo validar si se genera o no el token
     const token = jwt.sign({user}, 'my_secret_key', { expiresIn: '30s' });
     res.json({
         token
