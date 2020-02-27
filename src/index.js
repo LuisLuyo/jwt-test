@@ -2,11 +2,12 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const app = express();
 
-app.get('/', (req,res) => {
-    res.json({
-        text: 'api works!'
-    });
-});
+//middleware
+app.use(express.json());
+app.use(express.urlencoded({extended : false}));
+
+
+app.get('/', );
 
 app.post('/api/login',(req,res)=>{
     const user = {id:3};
@@ -45,6 +46,8 @@ function ensureToken(req, res, next){
 
 }
 
-app.listen(3000,() => {
-    console.log('Server on port 3000!')
+app.use(require('./routes/index'));
+
+app.listen(4000,() => {
+    console.log('Server on port 4000!')
 });
