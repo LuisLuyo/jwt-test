@@ -34,7 +34,7 @@ const generateToken = async (req,res) => {
     }
     else {
         res.status(401).json({
-            message: 'Error en usuario/contraseña, volver a intentar!',
+            message: 'Error en usuario/contraseña, volver a intentar, falso!',
             body: {
             }
         });
