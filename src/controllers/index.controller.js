@@ -2,11 +2,11 @@ const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 
 const pool = new Pool({
-    user: 'adminfrances1720',
-    host: '68.183.103.192',
-    password: 'Frances1720@2020',
-    database: 'francesTest',
-    port: '5432'
+    user: process.env['PG_USERNAME'],
+    host: process.env['PG_HOSTNAME'],
+    password: process.env['PG_PASSWORD'],
+    database: process.env['PG_DATABASE'],
+    port: process.env['PG_PORT'],
 });
 
 const getPrueba = (req,res) => {
@@ -15,20 +15,15 @@ const getPrueba = (req,res) => {
     });
 }
 
-const getToken = async (req,res) => {
-    const user = {id:3};
+const generateToken = async (req,res) => {
     //const usuarioParameter = String(req.params.usuario);
     //const claveParameter = String(req.params.clave);
     const { usuario, clave } = req.body;
     const usuariores = await pool.query('SELECT usuario, estado FROM SIGV_SEGURIDAD.USUARIO WHERE USUARIO = $1 AND CLAVE = $2;', [usuario,clave]);
-    //console.log(usuariores);
-    //debo obtener el usuario y contraseña insertado desde el body
-    //aqui debo acceder a la base de datos a Validar el usuario y la contraseña ingresada
-    //según sea la respuesta debo validar si se genera o no el token
     const rows = usuariores.rows;
     if(!isEmptyObject(usuariores.rows)){
         console.log(usuariores.rows);
-        const token = jwt.sign({usuariores}, 'my_secret_key', { expiresIn: '30s' });
+        const token = jwt.sign({usuariores}, process.env['TOKEN_KEY'], { expiresIn: process.env['TOKEN_EXP'] });
         res.status(200).json({
             message: 'Token generated successfully!',
             body: {
@@ -38,12 +33,27 @@ const getToken = async (req,res) => {
         });
     }
     else {
-        res.status(200).json({
+        res.status(401).json({
             message: 'Error en usuario/contraseña, volver a intentar!',
             body: {
             }
         });
     }
+}
+
+const validateToken = async (req,res) => {
+    jwt.verify(req.token, process.env['TOKEN_KEY'], (err, authData) => {
+      if(err) {
+         res.status(403).json({
+            message: 'El Token de la petición es inválido.'
+        });
+      } else {
+        res.json({
+          message: 'Access all!',
+          authData
+        });
+      }
+    });
 }
 
 function isEmptyObject(obj) {
@@ -55,14 +65,23 @@ function isEmptyObject(obj) {
   return true;
 }
 
-const getUsuario = async (req, res) => {
-    const ad = 'ADMINISTRADOR';
-    const response = await pool.query('SELECT usuario, clave FROM SIGV_SEGURIDAD.USUARIO WHERE USUARIO = $1 ORDER BY idusuario ASC',[ad]);
-    res.status(200).json(response.rows);
-};
+function verifyToken(req, res, next) {
+    const bearerHeader = req.headers['authorization'];
+    if(typeof bearerHeader !== 'undefined') {
+      const bearer = bearerHeader.split(' ');
+      const bearerToken = bearer[1];
+      req.token = bearerToken;
+      next();
+    } else {
+        res.status(403).json({
+            message: 'No se ha encontrado Token en la petición.'
+        });
+    }
+}
 
 module.exports = {
     getPrueba,
-    getUsuario,
-    getToken
+    generateToken,
+    validateToken,
+    verifyToken
 }

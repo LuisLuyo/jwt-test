@@ -1,12 +1,8 @@
-const express = require('express');
-const app = express();
+const app = require('./app');
 
-//middleware
-app.use(express.json());
-app.use(express.urlencoded({extended : false}));
+async function init() {
+    await app.listen(process.env['SERVER_PORT']);
+    console.log('Server on port ' + process.env['SERVER_PORT']);
+}
 
-
-app.use(require('./routes/index'));
-
-app.listen(4000);
-console.log('Server on port 4000!')
+init();
