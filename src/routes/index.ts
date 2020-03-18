@@ -1,10 +1,10 @@
-const { Router } = require('express');
+import { Router } from 'express';
 const router = Router();
 
-const { getPrueba, generateToken, validateToken, verifyToken } = require('../controllers/index.controller');
+import { getPrueba, generateToken, validateToken, verifyToken } from '../controllers/index.controller';
 
 router.get('/api/Prueba', getPrueba);
 router.post('/api/arquitectura/global/generateToken', generateToken);
 router.post('/api/arquitectura/global/validateToken', verifyToken, validateToken);
 
-module.exports = router;
+export default router;

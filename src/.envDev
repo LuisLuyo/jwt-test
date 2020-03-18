@@ -1,0 +1,10 @@
+# API SECRET KEY
+TOKEN_KEY=my_secret_key_dev
+TOKEN_EXP=5m
+
+# Database
+PG_HOSTNAME=localhost
+PG_USERNAME=adminfrances1720d
+PG_PASSWORD=Frances1720@2020d
+PG_DATABASE=francesdev
+PG_PORT=5432
