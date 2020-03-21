@@ -3,7 +3,7 @@ TOKEN_KEY=my_secret_key_prod
 TOKEN_EXP=5m
 
 # Database
-PG_HOSTNAME=157.230.15.164
+PG_HOSTNAME=docker-postgres
 PG_USERNAME=adminfrances1720
 PG_PASSWORD=Frances1720@2020
 PG_DATABASE=francesTest

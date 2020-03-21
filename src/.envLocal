@@ -1,9 +1,9 @@
 # API SECRET KEY
-TOKEN_KEY=my_secret_key_dev
+TOKEN_KEY=my_secret_key_local
 TOKEN_EXP=5m
 
 # Database
-PG_HOSTNAME=docker-postgres
+PG_HOSTNAME=localhost
 PG_USERNAME=adminfrances1720d
 PG_PASSWORD=Frances1720@2020d
 PG_DATABASE=francesdev

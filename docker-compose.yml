@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  docker-postgres:
+    container_name: container-postgres-dev
+    image: postgres
+    ports: 
+      - "5001:5432"
+    environment:
+        POSTGRES_USER: ${POSTGRES_USER:-postgres}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgresdev}
+        POSTGRES_DB: ${POSTGRES_PASSWORD:-francesdev}
+    volumes:
+      - ./BasedeDatos/basededatos.sql:/docker-entrypoint-initdb.d/basededatos.sql
+  docker-jwt:
+    container_name: container-jwt-dev
+    #image: image-jwt:1.0
+    build: .
+    ports:
+      - "4001:4000"
+    depends_on:
+      - docker-postgres
+  docker-restapi:
+    container_name: container-restapi-dev
+    #image: image-restapi:1.0
+    build: ../restapi-sigv/ .
+    ports:
+        - "3001:3000"
+    depends_on:
+        - docker-postgres

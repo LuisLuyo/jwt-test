@@ -12,6 +12,7 @@ export const getPrueba = async (req: Request, res: Response): Promise<Response> 
   }
 };
 
+
 export const generateToken = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { usuario, clave } = req.body;
