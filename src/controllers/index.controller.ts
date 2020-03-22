@@ -5,13 +5,12 @@ import jwt from 'jsonwebtoken';
 
 export const getPrueba = async (req: Request, res: Response): Promise<Response> => {
   try {
-    return res.status(200).json({ text: 'api works!' });
+    return res.status(200).json({ text: 'Rosmery Cordova Fernández eres una niña muy linda, atte. Pol ;)!' });
   } catch (e) {
       console.log(e);
       return res.status(500).json('Internal Server error');
   }
 };
-
 
 export const generateToken = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -19,7 +18,7 @@ export const generateToken = async (req: Request, res: Response): Promise<Respon
       const response: QueryResult = await pool.query('SELECT usuario, estado FROM SIGV_SEGURIDAD.USUARIO WHERE USUARIO = $1 AND CLAVE = $2;', [usuario,clave]);
       const rows = response.rows;
       if(!isEmptyObject(response.rows)){
-        console.log(response.rows);
+        //console.log(response.rows);
         const token = jwt.sign({response}, process.env['TOKEN_KEY'] || '', { expiresIn: process.env['TOKEN_EXP'] });
         res.status(200);
         res.setHeader('jwt', token);
@@ -66,7 +65,7 @@ function isEmptyObject(obj : any) {
 }
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-  const bearerHeader = req.headers['authorization'];
+  const bearerHeader = req.headers['jwt'];
   if(typeof bearerHeader !== 'undefined') {
     //const bearer = bearerHeader.split(' ');
     //const bearerToken = bearer[1];

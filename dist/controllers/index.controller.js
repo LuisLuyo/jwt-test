@@ -16,7 +16,7 @@ const database_1 = require("../database");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 exports.getPrueba = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return res.status(200).json({ text: 'api works!' });
+        return res.status(200).json({ text: 'Rosmery Cordova Fernández eres una niña muy linda, atte. Pol ;)!' });
     }
     catch (e) {
         console.log(e);
@@ -29,7 +29,7 @@ exports.generateToken = (req, res) => __awaiter(void 0, void 0, void 0, function
         const response = yield database_1.pool.query('SELECT usuario, estado FROM SIGV_SEGURIDAD.USUARIO WHERE USUARIO = $1 AND CLAVE = $2;', [usuario, clave]);
         const rows = response.rows;
         if (!isEmptyObject(response.rows)) {
-            console.log(response.rows);
+            //console.log(response.rows);
             const token = jsonwebtoken_1.default.sign({ response }, process.env['TOKEN_KEY'] || '', { expiresIn: process.env['TOKEN_EXP'] });
             res.status(200);
             res.setHeader('jwt', token);
@@ -74,7 +74,7 @@ function isEmptyObject(obj) {
     return true;
 }
 exports.verifyToken = (req, res, next) => {
-    const bearerHeader = req.headers['authorization'];
+    const bearerHeader = req.headers['jwt'];
     if (typeof bearerHeader !== 'undefined') {
         //const bearer = bearerHeader.split(' ');
         //const bearerToken = bearer[1];
