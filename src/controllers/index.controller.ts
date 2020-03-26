@@ -39,7 +39,7 @@ export const validateToken = (req: Request, res: Response) => {
         res.status(403);
         return res.json(data);
       } else {
-        console.log(authData);
+        //console.log(authData);
         const data = new OutputResponse("Success","Success","200","00","Token autenticado correctamente.","Token autenticado correctamente.");
         res.status(200);
         return res.json(data);

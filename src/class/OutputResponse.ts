@@ -5,7 +5,6 @@ export class OutputResponse {
     code: string;
     message: string;
     hint: string;
-
     constructor(_type: string, _severity: string, _http_status: string, _code: string, _message: string, _hint: string,) {
         this.type = _type;
         this.severity = _severity;

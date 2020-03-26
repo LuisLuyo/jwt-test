@@ -51,7 +51,7 @@ exports.validateToken = (req, res) => {
             return res.json(data);
         }
         else {
-            console.log(authData);
+            //console.log(authData);
             const data = new OutputResponse_1.OutputResponse("Success", "Success", "200", "00", "Token autenticado correctamente.", "Token autenticado correctamente.");
             res.status(200);
             return res.json(data);
