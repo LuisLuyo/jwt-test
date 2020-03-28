@@ -19,9 +19,9 @@ exports.generateToken = (req, res) => __awaiter(void 0, void 0, void 0, function
     try {
         const { usuario, clave } = req.body;
         const response = yield database_1.pool.query('SELECT usuario, estado FROM SIGV_SEGURIDAD.USUARIO WHERE USUARIO = $1 AND CLAVE = $2;', [usuario.toUpperCase(), clave.toUpperCase()]);
-        const rows = response.rows;
+        const user = response.rows;
         if (!isEmptyObject(response.rows)) {
-            const token = jsonwebtoken_1.default.sign({ response }, process.env['TOKEN_KEY'] || '', { expiresIn: process.env['TOKEN_EXP'] });
+            const token = jsonwebtoken_1.default.sign({ user }, process.env['TOKEN_KEY'] || '', { expiresIn: process.env['TOKEN_EXP'] });
             const data = new OutputResponse_1.OutputResponse("Success", "Success", "200", "00", "Token generado satisfactoriamente.", "El Token se ha creado correctamente con el usuario y la clave ingresada.");
             res.status(200);
             res.setHeader('jwt', token);
@@ -50,22 +50,13 @@ exports.validateToken = (req, res) => {
             res.status(403);
             return res.json(data);
         }
-        else {
-            //console.log(authData);
+        else { //console.log(authData);
             const data = new OutputResponse_1.OutputResponse("Success", "Success", "200", "00", "Token autenticado correctamente.", "Token autenticado correctamente.");
             res.status(200);
             return res.json(data);
         }
     });
 };
-function isEmptyObject(obj) {
-    for (var key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            return false;
-        }
-    }
-    return true;
-}
 exports.verifyToken = (req, res, next) => {
     const bearerHeader = req.headers['jwt'];
     if (typeof bearerHeader !== 'undefined') {
@@ -78,3 +69,11 @@ exports.verifyToken = (req, res, next) => {
         return res.json(data);
     }
 };
+function isEmptyObject(obj) {
+    for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            return false;
+        }
+    }
+    return true;
+}

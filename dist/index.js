@@ -17,8 +17,8 @@ const app_1 = __importDefault(require("./app"));
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
         yield app_1.default.listen(process.env['SERVER_PORT']);
-        console.log('Server on port', process.env['SERVER_PORT']);
-        console.log('JWT SIGV connect to:', process.env['AMBIENTE']);
+        console.log('Server on port *********', process.env['SERVER_PORT']);
+        console.log('JWT SIGV connect to*****', process.env['AMBIENTE']);
     });
 }
 init();
