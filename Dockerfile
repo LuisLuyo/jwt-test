@@ -1,6 +1,6 @@
 FROM node:12
 
-MAINTAINER Luis Luyo Hernández (luis.luyohernandez@gmail.com)
+LABEL maintainer="Luis Luyo Hernández (luis.luyohernandez@gmail.com)"
 
 WORKDIR /app
 
@@ -11,6 +11,6 @@ RUN npm install
 COPY . .
 
 # TypeScript
-CMD ["npm","build"]
+RUN npm run build
 
 CMD ["npm","start"]
