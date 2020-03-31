@@ -1,4 +1,4 @@
-version: '3'
+version: '3.6'
 
 services:
   docker-postgres:
@@ -14,8 +14,10 @@ services:
     volumes:
       - ./BasedeDatos/1.Schema-Table.sql:/docker-entrypoint-initdb.d/1.Schema-Table.sql
       - ./BasedeDatos/2.Functions-Seguridad.sql:/docker-entrypoint-initdb.d/2.Functions-Seguridad.sql
+    #command: '/bin/sh -c "echo usuario $$POSTGRES_USER"'
   docker-jwt:
     container_name: container-jwt-dev
+    #image: luisluyo/jwt-test:2.0    
     #image: image-jwt:1.0
     build: .
     restart: always
@@ -25,6 +27,7 @@ services:
       - docker-postgres
   docker-restapi:
     container_name: container-restapi-dev
+    #image: luisluyo/restapi-sigv:2.0    
     #image: image-restapi:1.0
     build: ../restapi-sigv/ .
     restart: always

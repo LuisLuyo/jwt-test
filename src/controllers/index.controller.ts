@@ -9,16 +9,26 @@ export const generateToken = async (req: Request, res: Response): Promise<Respon
     const { usuario, clave } = req.body;
     const response: QueryResult = await pool.query('SELECT usuario, estado FROM SIGV_SEGURIDAD.USUARIO WHERE USUARIO = $1 AND CLAVE = $2;', [usuario.toUpperCase(),clave.toUpperCase()]);
     const user = response.rows;
-    if(!isEmptyObject(response.rows)){
-      const token = jwt.sign({user}, process.env['TOKEN_KEY'] || '', { expiresIn: process.env['TOKEN_EXP'] });
-      const data = new OutputResponse("Success","Success","200","00","Token generado satisfactoriamente.","El Token se ha creado correctamente con el usuario y la clave ingresada.");
-      res.status(200);
-      res.setHeader('jwt', token);
-      return res.json(data);
+    if(!isEmptyObject(user)){
+      const estado = user[0].estado;
+      if(estado == 'A'){
+        const token = jwt.sign({user}, process.env['TOKEN_KEY'] || '', { expiresIn: process.env['TOKEN_EXP'] });
+        const data = new OutputResponse("Success","Success","200","00","Token generado satisfactoriamente.","El Token se ha creado correctamente con el usuario y la clave ingresada.");
+        res.status(200);
+        res.setHeader('jwt', token);
+        return res.json(data);
+      }    
+      else{
+        const token = '';
+        const data = new OutputResponse("Warning","Unauthorized","401","01","Usuario inactivo","El usuario se encuentra en estado inactivo.");
+        res.status(401);
+        res.setHeader('jwt', '');
+        return res.json(data);
+      }
     }
     else {
-      const data = new OutputResponse("Warning","Unauthorized","401","01","Usuario/clave incorrecto, volver a intentar.","Las credenciales del usuario/clave son inválidos.");
-      res.status(401);
+      const data = new OutputResponse("Warning","Not Found","404","05","Las credenciales son inválidas.","Registro no encontrado, usuario o clave incorrecto.");
+      res.status(404);
       return res.json(data);
     }
   } catch (e) {//console.error(e.stack);
