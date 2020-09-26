@@ -1,4 +1,4 @@
-export class OutputResponse {
+export class ArquitecturaResponse {
     type: string;
     severity: string;
     http_status: string;

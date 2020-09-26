@@ -14,6 +14,7 @@ services:
     volumes:
       - ./BasedeDatos/1.Schema-Table.sql:/docker-entrypoint-initdb.d/1.Schema-Table.sql
       - ./BasedeDatos/2.Functions-Seguridad.sql:/docker-entrypoint-initdb.d/2.Functions-Seguridad.sql
+      - ./BasedeDatos/3.Functions-Inventario.sql:/docker-entrypoint-initdb.d/3.Functions-Inventario.sql
     #command: '/bin/sh -c "echo usuario $$POSTGRES_USER"'
   docker-jwt:
     container_name: container-jwt-dev

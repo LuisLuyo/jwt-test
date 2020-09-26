@@ -3,10 +3,10 @@
 
 \c :postgres_db
 
-CREATE OR REPLACE FUNCTION sigv_seguridad.iniciasession(
-	_usuario character varying,
-	_clave character varying,
-	_uniquedeviceid character varying)
+CREATE OR REPLACE FUNCTION SIGV_SEGURIDAD.INICIASESSION(
+	_usuario CHARACTER VARYING,
+	_clave CHARACTER VARYING,
+	_uniquedeviceid CHARACTER VARYING)
     RETURNS record
     LANGUAGE 'plpgsql'
 AS $BODY$
@@ -98,7 +98,7 @@ AS $BODY$
 					INSERT INTO SIGV_SEGURIDAD.LOG(IDUSUARIOOPERACION,CANALOPERACION,FECHAOPERACION,IDOPERACION,UNIQUEDEVICEID)
 						VALUES(idusuarioq,'APP',NOW(),3,_UNIQUEDEVICEID);
 					code = '12';
-					message = 'Usuario bloqueado comuníquese con el administrador.';
+					message = 'Usuario bloqueado comuniquese con el administrador.';
 				END IF;				
 			ELSE
 				INSERT INTO SIGV_SEGURIDAD.LOG(IDUSUARIOOPERACION,CANALOPERACION,FECHAOPERACION,IDOPERACION,UNIQUEDEVICEID)
