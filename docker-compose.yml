@@ -8,13 +8,14 @@ services:
     ports: 
       - "5001:5432"
     environment:
-        POSTGRES_USER: ${POSTGRES_USER:-adminfrances1720d}
-        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Frances1720@2020d}
-        POSTGRES_DB: ${POSTGRES_DB:-francesdev}
+        POSTGRES_USER: ${POSTGRES_USER:-adminfrances1720T}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-Frances1720@2020T}
+        POSTGRES_DB: ${POSTGRES_DB:-francesTest}
     volumes:
       - ./BasedeDatos/1.Schema-Table.sql:/docker-entrypoint-initdb.d/1.Schema-Table.sql
       - ./BasedeDatos/2.Functions-Seguridad.sql:/docker-entrypoint-initdb.d/2.Functions-Seguridad.sql
       - ./BasedeDatos/3.Functions-Inventario.sql:/docker-entrypoint-initdb.d/3.Functions-Inventario.sql
+      - ./BasedeDatos/4.Carga-Inicial.sql:/docker-entrypoint-initdb.d/4.Carga-Inicial.sql
     #command: '/bin/sh -c "echo usuario $$POSTGRES_USER"'
   docker-jwt:
     container_name: container-jwt-dev

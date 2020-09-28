@@ -7,10 +7,10 @@
 \echo ************************  postgres_db  : :postgres_db ****************************************
 \echo ************************  postgres_tz  : :postgres_tz ****************************************
 
---CREATE DATABASE francesdev;
---USE francesDev;
+CREATE DATABASE postgres_db;
+--USE postgres_db;
 --CREATE USER adminfrances1720D with password 'Frances1720D@2020'; DESARROLLO PC LOCAL
---CREATE USER adminfrances1720d with password 'Frances1720@2020d'; CREA ROL
+--CREATE USER postgres_user with password 'Frances1720@2020T'; ----CREA ROL
 --CREACION DE SCHEMAS 
 
 \c :postgres_db
@@ -179,6 +179,21 @@ ALTER TABLE SIGV_VENTAS.EMPRESASUCURSAL
   
 INSERT INTO SIGV_VENTAS.EMPRESASUCURSAL (IDEMPRESA, IDSUCURSAL) VALUES(1,1);
 
+CREATE TABLE SIGV_VENTAS.SUCURSAL(
+  IDSUCURSAL SERIAL NOT NULL,
+  CODIGO CHARACTER VARYING(5),
+  DESCRIPCION CHARACTER VARYING(100),
+  DIRECCION CHARACTER VARYING(100),
+  DISTRITO CHARACTER VARYING(100),
+  PROVINCIA CHARACTER VARYING(100),
+  DEPARTAMENTO CHARACTER VARYING(100),
+  CONSTRAINT SUCURSAL_PKEY PRIMARY KEY (IDSUCURSAL)
+);
+ALTER TABLE SIGV_VENTAS.SUCURSAL
+  OWNER TO :postgres_user;
+
+INSERT INTO SIGV_VENTAS.SUCURSAL (CODIGO, DESCRIPCION, DIRECCION, DISTRITO, PROVINCIA, DEPARTAMENTO) VALUES('SV001', 'San Agustin SV', 'Jr. San Agustín 140','San Vicente', 'Cañete', 'Lima');
+
 \echo ************************  7. CREACION DE TABLAS EN SIGV_INVENTARIO **************************
 
 CREATE TABLE SIGV_INVENTARIO.CATEGORIA(
@@ -310,3 +325,5 @@ CREATE TABLE SIGV_INVENTARIO.STOCKD(
 );
 ALTER TABLE SIGV_INVENTARIO.STOCKD
   OWNER TO :postgres_user;  
+  
+\echo ************************  FIN EJECUCION SCRIPT 1.Schema-Table.sql  ************************

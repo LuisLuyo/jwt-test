@@ -1,3 +1,4 @@
+\echo ************************  INICIO EJECUCION SCRIPT 3.Functions-Inventario.sql  ************************
 \set postgres_user "adminfrances1720T"
 \set postgres_db "francesTest"
 
@@ -5,12 +6,13 @@
 
 CREATE OR REPLACE FUNCTION sigv_inventario.buscarproducto(
 	_pagina integer,
+	_registro integer,
 	_idsubcategoria integer,
 	_idsucursal integer,
 	_idstock integer,
 	_periodo character varying,
 	_codigo character varying,
-	_producto character varying,
+	_descripcion character varying,
 	_estado character varying,
 	OUT idproducto integer,
 	OUT codigo character varying,
@@ -18,7 +20,7 @@ CREATE OR REPLACE FUNCTION sigv_inventario.buscarproducto(
 	OUT categoria character varying,
 	OUT idsubcategoria integer,
 	OUT subcategoria character varying,
-	OUT producto character varying,
+	OUT descripcion character varying,
 	OUT tipo character varying,
 	OUT idmarca integer,
 	OUT idmedida integer,
@@ -33,6 +35,10 @@ CREATE OR REPLACE FUNCTION sigv_inventario.buscarproducto(
 	OUT situacion2 character varying)
     RETURNS SETOF record 
     LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+    ROWS 1000
     
 AS $BODY$
 	DECLARE
@@ -44,7 +50,7 @@ AS $BODY$
 		fpagination	INT;
 		pagination	INT;
 	BEGIN
-		pagination = 100;
+		pagination = _registro;
 		fpagination = _pagina * pagination;
 		ipagination = (fpagination - pagination) + 1;
 		_condicion = '';
@@ -69,11 +75,11 @@ AS $BODY$
 			END IF;
 		END IF;
 
-		IF(_codigo!='' OR _producto!='')THEN
+		IF(_codigo!='' OR _descripcion!='')THEN
 			IF(_condicion = '')THEN
 				_condicion = 'WHERE UPPER(TRIM(T1.CODIGO)) LIKE ''%'||_codigo||'%''';
 			ELSE
-				_condicion = _condicion||' AND UPPER(TRIM(T1.CODIGO)) LIKE ''%'||_codigo||'%'' AND UPPER(TRIM(T1.DESCRIPCION)) LIKE ''%'||_producto||'%''   ';
+				_condicion = _condicion||' AND UPPER(TRIM(T1.CODIGO)) LIKE ''%'||_codigo||'%'' AND UPPER(TRIM(T1.DESCRIPCION)) LIKE ''%'||_descripcion||'%''   ';
 			END IF;
 		END IF;
 
@@ -84,6 +90,7 @@ AS $BODY$
 				_condicion = _condicion||' AND T1.ESTADO ='''||_estado||'''';
 			END IF;
 		END IF;
+
 		_cadena	='SELECT
 					*
 					FROM
@@ -94,7 +101,7 @@ AS $BODY$
 							T4.DESCRIPCION CATEGORIA,
 							T1.IDSUBCATEGORIA,
 							T3.DESCRIPCION SUBCATEGORIA,
-							T1.DESCRIPCION PRODUCTO,
+							T1.DESCRIPCION DESCRIPCION,
 							T1.TIPO,
 							T1.IDMARCA,
 							T1.IDMEDIDA,
@@ -142,7 +149,7 @@ AS $BODY$
 			CATEGORIA := registro.CATEGORIA;
 			IDSUBCATEGORIA := registro.IDSUBCATEGORIA;
 			SUBCATEGORIA := registro.SUBCATEGORIA;
-			PRODUCTO := registro.PRODUCTO;
+			DESCRIPCION := registro.DESCRIPCION;
 			TIPO := registro.TIPO;
 			IDMARCA := registro.IDMARCA;
 			IDMEDIDA := registro.IDMEDIDA;
@@ -259,7 +266,7 @@ CREATE OR REPLACE FUNCTION SIGV_INVENTARIO.LISTARSUBCATEGORIA(
 		END LOOP;
 		RETURN;
 	END;
-$BODY$
+$BODY$;
 
 CREATE OR REPLACE FUNCTION SIGV_INVENTARIO.LISTARMARCA(
 	_idmarca INTEGER,
@@ -320,7 +327,7 @@ AS $BODY$
 		END LOOP;
 		RETURN;			
 	END;
-$BODY$
+$BODY$;
 
 CREATE OR REPLACE FUNCTION sigv_inventario.insertarproducto(
 	_idproducto integer,
@@ -338,7 +345,7 @@ CREATE OR REPLACE FUNCTION sigv_inventario.insertarproducto(
 	_estado character varying,
 	_idusuarioalta integer,
 	_canalalta character varying)
-    RETURNS record
+    RETURNS TABLE(insertarproducto json) 
     LANGUAGE 'plpgsql'
 AS $BODY$
 	DECLARE
@@ -366,16 +373,14 @@ AS $BODY$
 				retorno = 0;
 				codreto = 'INE0008';
 				mensaje = 'Utilize servicio modificación.';
-				SELECT INTO registro codreto, mensaje;
-				RETURN registro;
+				RETURN QUERY SELECT row_to_json(t1) FROM (SELECT retorno, codreto, mensaje) t1;
 		END IF;
 		IF(_codigo != '')THEN
 			IF EXISTS(SELECT codigo FROM sigv_inventario.producto WHERE codigo = _codigo)THEN
 				retorno = 0;
 				codreto = 'INE0000';
 				mensaje = 'El código de producto ya existe.';
-				SELECT INTO registro codreto, mensaje;
-				RETURN registro;
+				RETURN QUERY SELECT row_to_json(t1) FROM (SELECT retorno, codreto, mensaje) t1;
 			END IF;
 		ELSE
 			_codigo = 'DEFAULT999';
@@ -384,15 +389,13 @@ AS $BODY$
 			retorno = 0;
 			codreto = 'INE0001';
 			mensaje = 'Ingresar descripción del producto.';
-			SELECT INTO registro codreto, mensaje;
-			RETURN registro;
+			RETURN QUERY SELECT row_to_json(t1) FROM (SELECT retorno, codreto, mensaje) t1;
 		ELSE
 			IF EXISTS(SELECT descripcion FROM sigv_inventario.producto WHERE descripcion = _descripcion)THEN
 				retorno = 0;
 				codreto = 'INE0007';
 				mensaje = 'El nombre del producto ya existe.';
-				SELECT INTO registro codreto, mensaje;
-				RETURN registro;
+				RETURN QUERY SELECT row_to_json(t1) FROM (SELECT retorno, codreto, mensaje) t1;
 			END IF;
 		END IF;
 		IF(TRIM(_tipo) = '' OR _tipo IS NULL)THEN
@@ -402,15 +405,13 @@ AS $BODY$
 			retorno = 0;
 			codreto = 'INE0002';
 			mensaje = 'Ingresar subcategoria del producto.';
-			SELECT INTO registro codreto, mensaje;
-			RETURN registro;
+			RETURN QUERY SELECT row_to_json(t1) FROM (SELECT retorno, codreto, mensaje) t1;
 		END IF;
 		IF(_idmarca = 0 OR _idmarca IS NULL)THEN
 			retorno = 0;
 			codreto = 'INE0003';
 			mensaje = 'Ingresar marca del producto.';
-			SELECT INTO registro codreto, mensaje;
-			RETURN registro;
+			RETURN QUERY SELECT row_to_json(t1) FROM (SELECT retorno, codreto, mensaje) t1;
 		END IF;
 		IF(_idmedida = 0 OR _idmedida IS NULL)THEN
 			_idmedida = 1;
@@ -428,8 +429,7 @@ AS $BODY$
 			retorno = 0;
 			codreto = 'INE0004';
 			mensaje = 'Ingresar precio de venta del producto.';
-			SELECT INTO registro codreto, mensaje;
-			RETURN registro;
+			RETURN QUERY SELECT row_to_json(t1) FROM (SELECT retorno, codreto, mensaje) t1;
 		END IF;
 		IF(TRIM(_estado) = '' OR _estado IS NULL)THEN
 			_estado = 'A';
@@ -438,15 +438,13 @@ AS $BODY$
 			retorno = 0;
 			codreto = 'INE0005';
 			mensaje = 'Ingresar usuario de alta del producto.';
-			SELECT INTO registro codreto, mensaje;
-			RETURN registro;
+			RETURN QUERY SELECT row_to_json(t1) FROM (SELECT retorno, codreto, mensaje) t1;
 		END IF;
 		IF(TRIM(_canalalta) = '' OR _canalalta IS NULL)THEN
 			retorno = 0;
 			codreto = 'INE0006';
 			mensaje = 'Ingresar canal de alta del producto.';
-			SELECT INTO registro codreto, mensaje;
-			RETURN registro;
+			RETURN QUERY SELECT row_to_json(t1) FROM (SELECT retorno, codreto, mensaje) t1;
 		END IF;
 		
 		--------------------------------------- PROCESO ---------------------------------------
@@ -470,10 +468,11 @@ AS $BODY$
 			END IF;
 			retorno = 1;
 			codreto = 'INA0001';
-			mensaje = 'PRODUCTO CREADO CORRECTAMENTE...';
+			mensaje = 'Producto creado correctamente...';
 			filler	= _idproducto::VARCHAR;
-			SELECT INTO registro codreto, mensaje, filler;
-			RETURN registro;
+			RETURN QUERY SELECT row_to_json(t1) FROM (SELECT retorno, codreto, mensaje, filler) t1;
 		END IF;
 	END;
 $BODY$;
+
+\echo ************************  FIN EJECUCION SCRIPT 3.Functions-Inventario.sql  ************************

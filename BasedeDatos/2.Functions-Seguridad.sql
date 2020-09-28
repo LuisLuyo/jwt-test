@@ -1,3 +1,4 @@
+\echo ************************  INICIO EJECUCION SCRIPT 2.Functions-Seguridad.sql  ************************
 \set postgres_user "adminfrances1720T"
 \set postgres_db "francesTest"
 
@@ -114,3 +115,5 @@ AS $BODY$
 		RETURN registro;
 	END;
 $BODY$;
+
+\echo ************************  FIN EJECUCION SCRIPT 2.Functions-Seguridad.sql  ************************
