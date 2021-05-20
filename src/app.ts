@@ -3,7 +3,7 @@ import express, { Application } from 'express';
 import './utils/config';
 import indexRoutes from './routes/index';
 import cors from 'cors';
-import http from 'https';
+import http from 'http';
 import https from 'https';
 const app: Application = express();
 
