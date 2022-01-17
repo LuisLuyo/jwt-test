@@ -28,7 +28,7 @@ export const generateToken = async (req: Request, res: Response): Promise<Respon
       }
     }
     else {
-      const data = new ArquitecturaResponse("Warning","Not Found","404","05","Las credenciales son inválidas.","Registro no encontrado, usuario o clave incorrecto.");
+      const data = new ArquitecturaResponse("Warning","Not Found","404","05","Las credenciales son inválidas.","Registro no encontrado, usuario o clave incorrecto...");
       res.status(404);
       return res.json(data);
     }
